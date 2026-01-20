@@ -15,7 +15,7 @@ A modern RESTful API service for managing VHS tape rentals, built with Spring Bo
 - [Project Structure](#-project-structure)
 - [Environment Variables](#-environment-variables)
 - [Database Migrations](#-database-migrations)
-- [Additional Notes]("#-additional-notes")
+- [Additional Notes](#-additional-notes)
 
 ---
 
