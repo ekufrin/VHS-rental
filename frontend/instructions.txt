@@ -1,0 +1,134 @@
+Plan: React Frontend Aplikacija za VHS Rental System
+Baziran na analizi backend Spring Boot servisa s JWT autentifikacijom, RESTful API endpointima i strukturiranim error handlingom, ova frontend aplikacija će biti moderna SPA (Single Page Application) izgrađena u Reactu koristeći najnovije prakse i patterne.
+Koraci
+Inicijalizacija projekta i setup temeljnih dependencija - Kreirati React aplikaciju s Vite build toolom (najbrži moderne alternative CRA), konfigurirati TypeScript za type safety, instalirati React Router v6 za routing, TanStack Query (React Query v5) za server state management, Axios za HTTP requeste, Zod za validaciju, React Hook Form za forme, i Zustand za global client state (auth token storage).
+Autentifikacija i sigurnosna arhitektura - Implementirati AuthContext provider s Zustand storom koji upravlja access i refresh tokenima (refresh token u httpOnly cookie, access token u memory), axios interceptor za automatsko dodavanje Bearer tokena u Authorization header, interceptor za hvatanje 401 errora i automatski poziv /auth/access-token endpointa za generiranje novog access tokena iz refresh tokena, implementirati /auth/refresh-token poziv pri isteku refresh tokena, te /auth/logout funkcionalnost koja čisti cookie i memory state.
+API layer s centraliziranim error handlingom - Kreirati api/ folder struktur sa zasebnim fileovima po domenama (authApi.ts, vhsApi.ts, genreApi.ts, rentalApi.ts, reviewApi.ts, userApi.ts), svaki s typed funkcijama koje match backend endpointe, implementirati errorHandler.ts koji parsira backend ProblemDetail i ApiResponse strukture.
+UI komponente s compound pattern pristupom - Kreirati reusable UI library u components/ui/ folderu (Button, Input, Card, Modal, Toast, Pagination, SearchBar, FilterDropdown, SortDropdown, Table) koristeći CSS Modules ili Tailwind CSS, implementirati Layout komponentu s Header (navigation), Sidebar (opciono), i protected route wrapper, kreirati domain-specific komponente u features/ folderu organizirane po modulima (auth/, vhs/, genre/, rental/, review/, user/).
+Feature moduli sa hookovima i formama - Za svaki modul kreirati custom hooks za data fetching (npr. useVHSList, useVHSDetail, useCreateRental), forme s React Hook Form i Zod validacijom koja matchira backend validation constrainte, multipart form data upload za VHS image, implementirati pagination, search, filter i sort funkcionalnosti koje koriste Spring Data Pageable parametre (page, size, sort).
+Routing struktura i navigacija - Definirati route hierarchy u App.tsx sa React Router v6: /login, /register (public), / (home/dashboard), /vhs (list), /vhs/:id (detail), /genres (list sa admin create form), /rentals (list), /rentals/:id (detail), /profile (user settings s favorite genres), implementirati ProtectedRoute wrapper koji provjerava auth status i redirecta na login, dodati role-based routing guards za admin funkcionalnosti (create VHS, create genre).
+ 
+API Specifikacije po Servisima
+1. Auth API (/auth)
+POST /auth/login
+Request: { email: string, password: string }
+Response (200): ApiResponse<{ accessToken: string, tokenType: string }> + httpOnly cookie refresh_token
+Errors: 401 (Bad credentials)
+POST /auth/register
+Request: { name: string, email: string, password: string }
+Response (201): ApiResponse<{ accessToken: string, tokenType: string }> + httpOnly cookie refresh_token
+Errors: 409 (Email already exists), 400 (Validation errors)
+POST /auth/access-token
+Request: Cookie refresh_token (automatski)
+Response (200): ApiResponse<{ accessToken: string, tokenType: string }>
+Errors: 401 (Invalid/expired refresh token)
+POST /auth/refresh-token
+Request: Cookie refresh_token (automatski)
+Response (200): ApiResponse<{ accessToken: string, tokenType: string }> + novi httpOnly cookie refresh_token
+Errors: 401 (Invalid/expired refresh token)
+POST /auth/logout
+Request: Cookie refresh_token (automatski)
+Response (200): ApiResponse<null>, briše cookie
+Errors: 401 (Invalid token)
+ 
+2. User API (/users)
+GET /users?page=1&size=20
+Request: Query params (page, size, sort)
+Response (200): Page<{ id: UUID, name: string, email: string, favoriteGenres: Genre[] }>
+Auth: Public
+GET /users/:id
+Request: Path param id (UUID)
+Response (200): { id: UUID, name: string, email: string, favoriteGenres: Genre[] }
+Errors: 404 (User not found)
+Auth: Public
+PATCH /users/me/favorite-genres
+Request: { favoriteGenres: UUID[] }
+Response (200): { id: UUID, name: string, email: string, favoriteGenres: Genre[] }
+Errors: 400 (Validation error - empty list), 404 (Genre not found)
+Auth: Required (authenticated user)
+ 
+3. Genre API (/genres)
+POST /genres
+Request: { name: string }
+Response (201): { id: UUID, name: string }
+Errors: 409 (Genre already exists), 400 (Name blank)
+Auth: Required
+GET /genres?page=1&size=20
+Request: Query params (page, size, sort)
+Response (200): Page<{ id: UUID, name: string }>
+Auth: Public
+GET /genres/:id
+Request: Path param id (UUID)
+Response (200): { id: UUID, name: string }
+Errors: 404 (Genre not found)
+Auth: Public
+ 
+4. VHS API (/vhs)
+POST /vhs
+Request: multipart/form-data - { title: string, releaseDate: string (YYYY-MM-DDTHH:MM:SSZ), genreId: string (UUID), rentalPrice: number, stockLevel: number, status: 'AVAILABLE'|'RENTED', image?: File (jpg/png, max 10MB) }
+Response (201): { id: UUID, title: string, releaseDate: string, genre: { id: UUID, name: string }, rentalPrice: number, stockLevel: number, imageUrl: string|null, status: string }
+Errors: 400 (Validation errors), 404 (Genre not found)
+Auth: Required
+GET /vhs?page=1&size=20&sort=title,asc
+Request: Query params (page, size, sort)
+Response (200): Page<{ id: UUID, title: string, releaseDate: string, genre: GenreDTO, rentalPrice: number, stockLevel: number, imageUrl: string|null, status: string }>
+Auth: Public
+GET /vhs/:id
+Request: Path param id (UUID)
+Response (200): { id: UUID, title: string, releaseDate: string, genre: GenreDTO, rentalPrice: number, stockLevel: number, imageUrl: string|null, status: string }
+Errors: 404 (VHS not found)
+Auth: Public
+ 
+5. Rental API (/rentals)
+POST /rentals
+Request: { vhsId: string (UUID), dueDate: string (YYYY-MM-DDTHH:MM:SSZ) }
+Response (200): { id: string (UUID), vhs: VHSDTO, user: UserDTO, rentalDate: string, dueDate: string, returnDate: string|null, price: number|null }
+Errors: 400 (No available stock, Invalid date format), 404 (VHS not found)
+Auth: Required
+PATCH /rentals/:rentalId/finish
+Request: Path param rentalId (UUID)
+Response (200): { id: string, vhs: VHSDTO, user: UserDTO, rentalDate: string, dueDate: string, returnDate: string, price: number }
+Errors: 404 (Rental not found), 400 (Already returned), 403 (Not rental owner)
+Auth: Required (rental owner)
+GET /rentals?page=1&size=20
+Request: Query params (page, size, sort)
+Response (200): Page<{ id: string, vhs: VHSDTO, user: UserDTO, rentalDate: string, dueDate: string, returnDate: string|null, price: number|null }>
+Auth: Required
+GET /rentals/:rentalId
+Request: Path param rentalId (UUID)
+Response (200): { id: string, vhs: VHSDTO, user: UserDTO, rentalDate: string, dueDate: string, returnDate: string|null, price: number|null }
+Errors: 404 (Rental not found)
+Auth: Required
+ 
+6. Review API (/reviews)
+POST /reviews
+Request: { rentalId: UUID, rating: number (1.0-5.0), comment?: string (max 100 chars) }
+Response (201): { id: UUID, rating: number, comment: string|null, user: { email: string }, vhs: { id: UUID, title: string, genre: string, releaseDate: string } }
+Errors: 400 (Validation errors, Rental not returned, Review already exists), 404 (Rental not found), 403 (Not rental owner)
+Auth: Required (rental owner)
+GET /reviews/vhs/:vhsId?page=1&size=20
+Request: Path param vhsId (UUID), query params (page, size, sort)
+Response (200): Page<{ id: UUID, rating: number, comment: string|null, user: { email: string }, vhs: { id: UUID, title: string, genre: string, releaseDate: string } }>
+Auth: Public
+GET /reviews/:id
+Request: Path param id (UUID)
+Response (200): { id: UUID, rating: number, comment: string|null, user: { email: string }, vhs: { id: UUID, title: string, genre: string, releaseDate: string } }
+Errors: 404 (Review not found)
+Auth: Public
+PUT /reviews/:id
+Request: { rating: number (1.0-5.0), comment?: string (max 100 chars) }
+Response (204): No content
+Errors: 400 (Validation errors), 404 (Review not found), 403 (Not review owner)
+Auth: Required (review owner)
+DELETE /reviews/:id
+Request: Path param id (UUID)
+Response (204): No content
+Errors: 404 (Review not found), 403 (Not review owner)
+Auth: Required (review owner)
+ 
+Dodatne Napomene
+TypeScript type definitions - U types/ folderu definirati sve interfejse: User, Genre, VHS, Rental, Review, ApiResponse<T>, Page<T>, ProblemDetail, request/response tipove za sve endpointe, enum za Status ('AVAILABLE' | 'RENTED').
+Pagination helper - Kreirati usePagination hook koji upravlja state parametrima (page, size, sort) i URL query parametrima kroz React Router, format response iz backendu je Spring Data Page struktura: { content: T[], pageable: {...}, totalElements: number, totalPages: number, last: boolean, first: boolean, number: number, size: number }.
+Error response strukture - Backend vraća dva formata: Success (ApiResponse<T>) s poljima status: "success", message: string, timestamp: string, data: T i Error (ProblemDetail) s poljima status: number, title: string, detail: string, timestamp: string, axios interceptor treba prepoznati i parsirati oba.
+Image handling - VHS slike se šalju kao multipart/form-data na /vhs endpoint, response sadrži imageUrl (npr. /static/uploads/{uuid}.{ext}), frontend prikazuje slike kao ${API_BASE_URL}${imageUrl}, za image upload koristiti FormData API i postaviti Content-Type: multipart/form-data header.
+Date formatting - Backend koristi ISO 8601 format (YYYY-MM-DDTHH:MM:SSZ), koristiti date-fns ili dayjs library za parsiranje i formatiranje datuma u UI, validacija u formama treba osigurati ispravan format prije slanja.

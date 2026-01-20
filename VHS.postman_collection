@@ -1,0 +1,1150 @@
+{
+  "info": {
+    "_postman_id": "4f40b92f-851e-4e87-bd98-e074c9485c67",
+    "name": "Dev",
+    "description": "Interview task for True North job application.\n\n[@ekufrin](https://github.com/ekufrin/VHS-rental)",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "36815860",
+    "_collection_link": "https://go.postman.co/collection/36815860-4f40b92f-851e-4e87-bd98-e074c9485c67?source=collection_link"
+  },
+  "item": [
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "Register",
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "POST",
+            "header": [],
+            "description": "# Possible cases:\n\n- Anonymous user sends valid request - OK\n    \n- Anonymous user sends request with email already existing in database - ERROR"
+          },
+          "response": [
+            {
+              "name": "Success",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json",
+                    "type": "text"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\r\n    \"name\" : \"Emanuel Kufrin\",\r\n    \"email\": \"emanuel.kufrin@example.com\",\r\n    \"password\": \"password123\"\r\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "http://localhost:8080/api/v1/auth/register",
+                  "protocol": "http",
+                  "host": [
+                    "localhost"
+                  ],
+                  "port": "8080",
+                  "path": [
+                    "api",
+                    "v1",
+                    "auth",
+                    "register"
+                  ]
+                }
+              },
+              "_postman_previewlanguage": null,
+              "header": null,
+              "cookie": [],
+              "body": null
+            },
+            {
+              "name": "Validation error",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json",
+                    "type": "text"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\r\n    \"name\" : \"\",\r\n    \"email\": \"emanuel.kufrin@example.com\",\r\n    \"password\": \"password123\"\r\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "http://localhost:8080/api/v1/auth/register",
+                  "protocol": "http",
+                  "host": [
+                    "localhost"
+                  ],
+                  "port": "8080",
+                  "path": [
+                    "api",
+                    "v1",
+                    "auth",
+                    "register"
+                  ]
+                }
+              },
+              "_postman_previewlanguage": null,
+              "header": null,
+              "cookie": [],
+              "body": null
+            }
+          ]
+        },
+        {
+          "name": "Login",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "description": "# Possible cases:\n\n- Anonymous user sends valid login request - OK\n    \n- Anonymous user sends invalid login request (wrong email/pass) - ERROR"
+          },
+          "response": [
+            {
+              "name": "Success",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json",
+                    "type": "text"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\r\n    \"email\": \"emanuel.kufrin@example.com\",\r\n    \"password\": \"password123\"\r\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "http://localhost:8080/api/v1/auth/login",
+                  "protocol": "http",
+                  "host": [
+                    "localhost"
+                  ],
+                  "port": "8080",
+                  "path": [
+                    "api",
+                    "v1",
+                    "auth",
+                    "login"
+                  ]
+                }
+              },
+              "_postman_previewlanguage": null,
+              "header": null,
+              "cookie": [],
+              "body": null
+            },
+            {
+              "name": "Wrong cred",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json",
+                    "type": "text"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\r\n    \"email\": \"emanuel.kufrin@example.com\",\r\n    \"password\": \"password\"\r\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "http://localhost:8080/api/v1/auth/login",
+                  "protocol": "http",
+                  "host": [
+                    "localhost"
+                  ],
+                  "port": "8080",
+                  "path": [
+                    "api",
+                    "v1",
+                    "auth",
+                    "login"
+                  ]
+                }
+              },
+              "_postman_previewlanguage": null,
+              "header": null,
+              "cookie": [],
+              "body": null
+            }
+          ]
+        },
+        {
+          "name": "Generate access token",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": ""
+            },
+            "description": "# Possible cases:\n\n- User with valid refresh token in cookie sends request - OK\n    \n- User with invalid (expired, not signed, revoked, missing) refresh token in cookie sends request - ERROR"
+          },
+          "response": [
+            {
+              "name": "Success",
+              "originalRequest": {
+                "method": "POST",
+                "header": [],
+                "url": {
+                  "raw": "http://localhost:8080/api/v1/auth/access-token",
+                  "protocol": "http",
+                  "host": [
+                    "localhost"
+                  ],
+                  "port": "8080",
+                  "path": [
+                    "api",
+                    "v1",
+                    "auth",
+                    "access-token"
+                  ]
+                }
+              },
+              "_postman_previewlanguage": null,
+              "header": null,
+              "cookie": [],
+              "body": null
+            }
+          ]
+        },
+        {
+          "name": "Generate refresh token",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": ""
+            },
+            "description": "# Possible cases:\n\n- User with valid refresh token in cookie sends request - OK\n    \n- User with invalid refresh token (revoked,missing, invalid signature) in cookie sends request - ERROR"
+          },
+          "response": [
+            {
+              "name": "Success",
+              "originalRequest": {
+                "method": "POST",
+                "header": [],
+                "url": {
+                  "raw": "http://localhost:8080/api/v1/auth/refresh-token",
+                  "protocol": "http",
+                  "host": [
+                    "localhost"
+                  ],
+                  "port": "8080",
+                  "path": [
+                    "api",
+                    "v1",
+                    "auth",
+                    "refresh-token"
+                  ]
+                }
+              },
+              "_postman_previewlanguage": null,
+              "header": null,
+              "cookie": [],
+              "body": null
+            }
+          ]
+        },
+        {
+          "name": "Logout",
+          "request": {
+            "method": "POST",
+            "header": []
+          },
+          "response": [
+            {
+              "name": "Success",
+              "originalRequest": {
+                "method": "POST",
+                "header": [],
+                "url": {
+                  "raw": "http://localhost:8080/api/v1/auth/logout",
+                  "protocol": "http",
+                  "host": [
+                    "localhost"
+                  ],
+                  "port": "8080",
+                  "path": [
+                    "api",
+                    "v1",
+                    "auth",
+                    "logout"
+                  ]
+                }
+              },
+              "_postman_previewlanguage": null,
+              "header": null,
+              "cookie": [],
+              "body": null
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Genre",
+      "item": [
+        {
+          "name": "Get all",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/api/v1/genres",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "v1",
+                "genres"
+              ],
+              "query": [
+                {
+                  "key": "sort",
+                  "value": "name,asc",
+                  "type": "text",
+                  "disabled": true
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get by id",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/api/v1/genres/9b263bf5-e890-4d63-97db-99c2073561cc",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "v1",
+                "genres",
+                "9b263bf5-e890-4d63-97db-99c2073561cc"
+              ],
+              "query": [
+                {
+                  "key": "sort",
+                  "value": "name,asc",
+                  "type": "text",
+                  "disabled": true
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Add genre",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"name\" : \"Vevo\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:8080/api/v1/genres",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "v1",
+                "genres"
+              ],
+              "query": [
+                {
+                  "key": "sort",
+                  "value": "price,asc",
+                  "type": "text",
+                  "disabled": true
+                }
+              ]
+            },
+            "description": "# Possible cases:\n\n- Authorized user sends valid request - OK\n    \n- Anonymous user sends request - ERROR\n    \n- Authorized user sends request with already existing genre - ERROR"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "User",
+      "item": [
+        {
+          "name": "Get all",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/api/v1/users",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "v1",
+                "users"
+              ],
+              "query": [
+                {
+                  "key": "sort",
+                  "value": "name,asc",
+                  "type": "text",
+                  "disabled": true
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get by id",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/api/v1/users/d47d8ccf-58a7-46c6-ba2c-80a4c72a4fdb",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "v1",
+                "users",
+                "d47d8ccf-58a7-46c6-ba2c-80a4c72a4fdb"
+              ],
+              "query": [
+                {
+                  "key": "sort",
+                  "value": "name,asc",
+                  "type": "text",
+                  "disabled": true
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get details for current user",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/api/v1/users/me",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "v1",
+                "users",
+                "me"
+              ],
+              "query": [
+                {
+                  "key": "sort",
+                  "value": "name,asc",
+                  "type": "text",
+                  "disabled": true
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Add favorite genres",
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"favoriteGenres\" : [\r\n        \"ffd69ded-47dd-4c12-998a-ab4c5d440bd4\",\r\n        \"5c88f450-609c-4110-9bff-29011174213f\"\r\n    ]\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:8080/api/v1/users/me/favorite-genres",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "v1",
+                "users",
+                "me",
+                "favorite-genres"
+              ],
+              "query": [
+                {
+                  "key": "sort",
+                  "value": "name,asc",
+                  "type": "text",
+                  "disabled": true
+                }
+              ]
+            },
+            "description": "# Possible cases:\n\n- Authorized user sends valid request - OK\n    \n- Anonymous user sends request - ERROR"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "VHS",
+      "item": [
+        {
+          "name": "Add vhs",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "title",
+                  "value": "Take me home",
+                  "type": "text"
+                },
+                {
+                  "key": "releaseDate",
+                  "value": "2025-11-11T03:33:12Z",
+                  "type": "text"
+                },
+                {
+                  "key": "genreId",
+                  "value": "5c88f450-609c-4110-9bff-29011174213f",
+                  "type": "text"
+                },
+                {
+                  "key": "rentalPrice",
+                  "value": "3.3",
+                  "type": "text"
+                },
+                {
+                  "key": "stockLevel",
+                  "value": "2",
+                  "type": "text"
+                },
+                {
+                  "key": "status",
+                  "value": "AVAILABLE",
+                  "type": "text"
+                },
+                {
+                  "key": "image",
+                  "type": "file",
+                  "uuid": "e984bfe0-82a9-42dc-9505-7117ae89dd7f",
+                  "src": "/C:/Users/ekufrin/Desktop/Posao/foto.jpg"
+                }
+              ]
+            },
+            "url": {
+              "raw": "http://localhost:8080/api/v1/vhs",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "v1",
+                "vhs"
+              ]
+            },
+            "description": "# Possible cases:\n\n- Authorized user sends valid request - OK\n    \n- Anonymous user sends request - ERROR"
+          },
+          "response": []
+        },
+        {
+          "name": "Get all vhs",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "title",
+                  "value": "Take me home",
+                  "type": "text"
+                },
+                {
+                  "key": "releaseDate",
+                  "value": "2025-11-11T03:33:12Z",
+                  "type": "text"
+                },
+                {
+                  "key": "genreId",
+                  "value": "5c88f450-609c-4110-9bff-29011174213f",
+                  "type": "text"
+                },
+                {
+                  "key": "rentalPrice",
+                  "value": "3.3",
+                  "type": "text"
+                },
+                {
+                  "key": "stockLevel",
+                  "value": "2",
+                  "type": "text"
+                },
+                {
+                  "key": "status",
+                  "value": "AVAILABLE",
+                  "type": "text"
+                },
+                {
+                  "key": "image",
+                  "type": "file",
+                  "uuid": "e984bfe0-82a9-42dc-9505-7117ae89dd7f",
+                  "src": "/C:/Users/ekufrin/Desktop/Posao/foto.jpg"
+                }
+              ]
+            },
+            "url": {
+              "raw": "http://localhost:8080/api/v1/vhs?sort=title,asc",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "v1",
+                "vhs"
+              ],
+              "query": [
+                {
+                  "key": "sort",
+                  "value": "title,asc"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get vhs by id",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "title",
+                  "value": "Take me home",
+                  "type": "text"
+                },
+                {
+                  "key": "releaseDate",
+                  "value": "2025-11-11T03:33:12Z",
+                  "type": "text"
+                },
+                {
+                  "key": "genreId",
+                  "value": "5c88f450-609c-4110-9bff-29011174213f",
+                  "type": "text"
+                },
+                {
+                  "key": "rentalPrice",
+                  "value": "3.3",
+                  "type": "text"
+                },
+                {
+                  "key": "stockLevel",
+                  "value": "2",
+                  "type": "text"
+                },
+                {
+                  "key": "status",
+                  "value": "AVAILABLE",
+                  "type": "text"
+                },
+                {
+                  "key": "image",
+                  "type": "file",
+                  "uuid": "e984bfe0-82a9-42dc-9505-7117ae89dd7f",
+                  "src": "/C:/Users/ekufrin/Desktop/Posao/foto.jpg"
+                }
+              ]
+            },
+            "url": {
+              "raw": "http://localhost:8080/api/v1/vhs/ae02de76-7c23-41ba-bfc9-e02b1601fc51",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "v1",
+                "vhs",
+                "ae02de76-7c23-41ba-bfc9-e02b1601fc51"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Rental",
+      "item": [
+        {
+          "name": "Add rental",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/api/v1/rentals",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "v1",
+                "rentals"
+              ]
+            },
+            "description": "# Possible cases:\n\n- Authorized user creates new rental - OK\n    \n- Authorized user tries to create rental while all VHS are rented out - ERROR"
+          },
+          "response": [
+            {
+              "name": "Success",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json",
+                    "type": "text"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\r\n    \"vhsId\" : \"5d807ff6-df71-45ef-8e81-b54282894edc\",\r\n    \"dueDate\": \"2026-01-22T12:00:00Z\"\r\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "http://localhost:8080/api/v1/rentals",
+                  "protocol": "http",
+                  "host": [
+                    "localhost"
+                  ],
+                  "port": "8080",
+                  "path": [
+                    "api",
+                    "v1",
+                    "rentals"
+                  ]
+                }
+              },
+              "_postman_previewlanguage": null,
+              "header": null,
+              "cookie": [],
+              "body": null
+            }
+          ]
+        },
+        {
+          "name": "Finish rental",
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/api/v1/rentals/0401d695-ad96-497b-a7c1-4fb427463694/finish",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "v1",
+                "rentals",
+                "0401d695-ad96-497b-a7c1-4fb427463694",
+                "finish"
+              ]
+            },
+            "description": "# Possible cases:\n\n- Authorized user finishes his rental - OK\n    \n- Authorized user tries to finish somebody else rental - ERROR\n    \n- Authorized user tries to finish already finished rental - ERROR"
+          },
+          "response": [
+            {
+              "name": "Success",
+              "originalRequest": {
+                "method": "PATCH",
+                "header": [],
+                "url": {
+                  "raw": "http://localhost:8080/api/v1/rentals/0401d695-ad96-497b-a7c1-4fb427463694/finish",
+                  "protocol": "http",
+                  "host": [
+                    "localhost"
+                  ],
+                  "port": "8080",
+                  "path": [
+                    "api",
+                    "v1",
+                    "rentals",
+                    "0401d695-ad96-497b-a7c1-4fb427463694",
+                    "finish"
+                  ]
+                }
+              },
+              "_postman_previewlanguage": null,
+              "header": null,
+              "cookie": [],
+              "body": null
+            }
+          ]
+        },
+        {
+          "name": "Get all rentals",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/api/v1/rentals",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "v1",
+                "rentals"
+              ],
+              "query": [
+                {
+                  "key": "sort",
+                  "value": "price,asc",
+                  "type": "text",
+                  "disabled": true
+                },
+                {
+                  "key": "page",
+                  "value": "1",
+                  "type": "text",
+                  "disabled": true
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get rental by id",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/api/v1/rentals/c3d895ff-98ea-4072-8c29-355ed25a9bb8",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "v1",
+                "rentals",
+                "c3d895ff-98ea-4072-8c29-355ed25a9bb8"
+              ],
+              "query": [
+                {
+                  "key": "sort",
+                  "value": "price,asc",
+                  "type": "text",
+                  "disabled": true
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Review",
+      "item": [
+        {
+          "name": "Add review",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"rentalId\" : \"5ae6944e-b2aa-4956-b077-cab722f43969\",\r\n    \"rating\" : 5,\r\n    \"comment\" : \"Odlično\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:8080/api/v1/reviews",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "v1",
+                "reviews"
+              ],
+              "query": [
+                {
+                  "key": "sort",
+                  "value": "price,asc",
+                  "type": "text",
+                  "disabled": true
+                }
+              ]
+            },
+            "description": "# Possible cases:\n\n- Authorized user creates new review for his rental - OK\n    \n- Authorized user tries to create second review for same rental - ERROR\n    \n- Authorized user tries to create review for rental which is not his - ERROR"
+          },
+          "response": []
+        },
+        {
+          "name": "Get all reviews for VHS",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/api/v1/reviews/vhs/5d807ff6-df71-45ef-8e81-b54282894edc",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "v1",
+                "reviews",
+                "vhs",
+                "5d807ff6-df71-45ef-8e81-b54282894edc"
+              ],
+              "query": [
+                {
+                  "key": "sort",
+                  "value": "price,asc",
+                  "type": "text",
+                  "disabled": true
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get review by id",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/api/v1/reviews/e327b6bf-7fd7-4ddb-8477-9ede4e186262",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "v1",
+                "reviews",
+                "e327b6bf-7fd7-4ddb-8477-9ede4e186262"
+              ],
+              "query": [
+                {
+                  "key": "sort",
+                  "value": "price,asc",
+                  "type": "text",
+                  "disabled": true
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update review",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"rating\" : 3.5,\r\n    \"comment\" : \"Average\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:8080/api/v1/reviews/e327b6bf-7fd7-4ddb-8477-9ede4e186262",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "v1",
+                "reviews",
+                "e327b6bf-7fd7-4ddb-8477-9ede4e186262"
+              ],
+              "query": [
+                {
+                  "key": "sort",
+                  "value": "price,asc",
+                  "type": "text",
+                  "disabled": true
+                }
+              ]
+            },
+            "description": "# Possible cases:\n\n- Authorized user update his review - OK\n    \n- Authorized user tries to update review which is not his - ERROR"
+          },
+          "response": []
+        },
+        {
+          "name": "Delete review by id",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"rentalId\" : \"5ae6944e-b2aa-4956-b077-cab722f43969\",\r\n    \"rating\" : 5,\r\n    \"comment\" : \"Odlično\"\r\n}"
+            },
+            "url": {
+              "raw": "http://localhost:8080/api/v1/reviews/d18be827-d93b-4977-96e9-3173d45dbb67",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "v1",
+                "reviews",
+                "d18be827-d93b-4977-96e9-3173d45dbb67"
+              ],
+              "query": [
+                {
+                  "key": "sort",
+                  "value": "price,asc",
+                  "type": "text",
+                  "disabled": true
+                }
+              ]
+            },
+            "description": "# Possible cases:\n\n- Authorized user deletes his own review - OK\n    \n- Authorized user tries to delete review which is not his - ERROR"
+          },
+          "response": []
+        }
+      ]
+    }
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxZTQ4YzQzNS1lNzZhLTRkYTgtOGViZC02NmYzNzM0MjZjYWYiLCJpYXQiOjE3Njg5MjkzNzMsImV4cCI6MTc2ODkzMDI3M30.xOJ35lfRcoZnORIDIavLjuFzr8aZyypYTXvL2cbKEKb2lzPiRfX5nSjX49Z5X4zk_uaBdtNeX1YLG3vtHwLE9g",
+        "type": "string"
+      }
+    ]
+  },
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "packages": {},
+        "requests": {},
+        "exec": [
+          ""
+        ]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "packages": {},
+        "requests": {},
+        "exec": [
+          ""
+        ]
+      }
+    }
+  ]
+}
